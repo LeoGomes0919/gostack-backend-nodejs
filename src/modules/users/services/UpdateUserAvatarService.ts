@@ -5,13 +5,13 @@ import User from '@modules/users/infra/typeorm/entities/User';
 import upload from '@config/upload';
 import AppError from '@shared/errors/AppError';
 
-interface Request {
+interface IRequest {
   user_id: string;
   file_name: string;
 }
 
 class UpdateUserAvatarService {
-  public async execute({ user_id, file_name }: Request): Promise<User> {
+  public async execute({ user_id, file_name }: IRequest): Promise<User> {
     const userRepository = getRepository(User);
 
     const user = await userRepository.findOne(user_id);

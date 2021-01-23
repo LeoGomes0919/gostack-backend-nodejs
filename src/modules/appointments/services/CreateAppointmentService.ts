@@ -2,17 +2,17 @@ import { getCustomRepository } from 'typeorm';
 import { startOfHour } from 'date-fns';
 
 import Appointment from '@modules/appointments/infra/typeorm/entities/Appointment';
-import AppointmentsRepository from '@modules/appointments/repositories/AppointmentsRepository';
+import AppointmentsRepository from '@modules/appointments/infra/typeorm/repositories/AppointmentsRepository';
 
 import AppError from '@shared/errors/AppError';
 
-interface Request {
+interface IRequest {
   provider_id: string;
   date: Date;
 }
 
 class CreateAppointmentService {
-  public async execute({ date, provider_id }: Request): Promise<Appointment> {
+  public async execute({ date, provider_id }: IRequest): Promise<Appointment> {
     const appointmentRepository = getCustomRepository(AppointmentsRepository);
 
     const appointmentDate = startOfHour(date);
@@ -25,12 +25,10 @@ class CreateAppointmentService {
       throw new AppError('Esse compromisso já está agendado.');
     }
 
-    const appointment = appointmentRepository.create({
+    const appointment = await appointmentRepository.create({
       provider_id,
       date: appointmentDate,
     });
-
-    await appointmentRepository.save(appointment);
 
     return appointment;
   }
