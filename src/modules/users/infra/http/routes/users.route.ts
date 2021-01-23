@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import multer from 'multer';
+import { container } from 'tsyringe';
 
 import uploadConfig from '@config/upload';
 
@@ -35,8 +36,7 @@ userRouter.patch(
   upload.single('avatar'),
   ensureAuthenticated,
   async (req, res) => {
-    const usersRepository = new UsersRepository();
-    const updateAvatar = new UpdateUserAvatarService(usersRepository);
+    const updateAvatar = container.resolve(UpdateUserAvatarService);
 
     const user = await updateAvatar.execute({
       user_id: req.user.id,
