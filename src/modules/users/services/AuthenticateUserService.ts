@@ -5,6 +5,7 @@ import authConfig from '@config/auth';
 
 import User from '@modules/users/infra/typeorm/entities/User';
 import AppError from '@shared/errors/AppError';
+import IUsersRepository from '../repositories/IUsersRepository';
 
 interface IRequeste {
   email: string;
@@ -17,14 +18,10 @@ interface IResponse {
 }
 
 class AuthenticateUserService {
-  public async execute({ email, password }: IRequeste): Promise<IResponse> {
-    const userRepository = getRepository(User);
+  constructor(private usersRepository: IUsersRepository) {}
 
-    const user = await userRepository.findOne({
-      where: {
-        email,
-      },
-    });
+  public async execute({ email, password }: IRequeste): Promise<IResponse> {
+    const user = await this.usersRepository.findByEmail(email);
 
     if (!user) {
       throw new AppError('Email ou senha incorretos.', 401);
