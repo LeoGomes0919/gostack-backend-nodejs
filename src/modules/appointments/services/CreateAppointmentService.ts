@@ -26,7 +26,7 @@ class CreateAppointmentService {
     );
 
     if (findAppointmentInSameDate) {
-      throw new AppError('Esse compromisso já está agendado.');
+      throw new AppError('Já existe um compromisso agendado para essa data.');
     }
 
     const appointment = await this.appointmentsRepository.create({
